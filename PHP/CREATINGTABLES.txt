@@ -1,0 +1,71 @@
+
+
+CREATE TABLE STAFF(
+       Staff_Id int PRIMARY KEY,
+       FName varchar(20),
+       MName varchar(20),
+       LName varchar(20),
+       Phone_No varchar(10),
+       );
+
+ ALTER TABLE STAFF
+       ADD FOREIGN KEY (Dept_Id) REFERENCES DEPARTMENT(Dept_Id);
+
+ CREATE TABLE CUSTOMER (
+       Cust_Id int PRIMARY KEY,
+       FName varchar(20),
+       MName varchar(20),
+       LName varchar(20),
+       DOB DATE,
+       Age int,
+       Address TEXT,
+       Phone_No varchar(10),
+       Staff_Id int,
+       FOREIGN KEY(Staff_Id) REFERENCES STAFF(Staff_Id) ON DELETE SET NULL);
+
+  CREATE TABLE ROOM (
+       Room_No varchar(10) PRIMARY KEY,
+       Cost_Per_Night DECIMAL(13,2),
+       Type varchar(20),
+       Cust_Id int,
+       FOREIGN KEY(Cust_Id) REFERENCES CUSTOMER(Cust_Id) ON DELETE SET NULL,
+       Duration_Days int);
+
+  CREATE TABLE AMENITY (
+       Amenity_Id int PRIMARY KEY,
+       Name varchar(20), 
+       Rate_Per_Hour DECIMAL(13,2));
+
+ CREATE TABLE FOOD (
+       Food_Id int PRIMARY KEY,
+       Name varchar(20),
+       Cuisine varchar(20),
+       Price DECIMAL(13,2));
+
+ CREATE TABLE ORDERED_BY (
+       Cust_Id int,
+       Food_Id int
+       Quantity int DEFAULT 1);
+
+ ALTER TABLE ORDERED_BY 
+       ADD PRIMARY KEY(Cust_Id,Food_Id);
+
+ ALTER TABLE ORDERED_BY 
+       ADD FOREIGN KEY(Cust_Id) REFERENCES CUSTOMER(Cust_Id);
+
+ ALTER TABLE ORDERED_BY 
+       ADD FOREIGN KEY(Food_Id) REFERENCES FOOD(Food_Id);
+
+ CREATE TABLE AVAILS (
+       Cust_Id int,
+       Amenity_Id int
+       Time int);
+
+ ALTER TABLE AVAILS
+       ADD PRIMARY KEY(Cust_Id,Amenity_Id);
+
+ ALTER TABLE AVAILS
+       ADD FOREIGN KEY(Amenity_Id) REFERENCES AMENITY(Amenity_Id) ON DELETE CASCADE;
+
+ ALTER TABLE AVAILS
+       ADD FOREIGN KEY(Cust_Id) REFERENCES CUSTOMER(Cust_Id) ON DELETE CASCADE;

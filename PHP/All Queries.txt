@@ -1,0 +1,24 @@
+_____________ALL QUERIES_____________________
+
+1. Login Queries:
+	Guest: SELECT Cust_Id, Phone_No FROM CUSTOMER WHERE Cust_Id= '$Cust_Id' AND Phone_No = '$Phone_No'
+	Admin: SELECT Staff_Id, Phone_No FROM STAFF WHERE Staff_Id= '$Staff_Id' AND Phone_No = '$Phone_No';
+2.To get name of Person who logs in:
+	Guest: SELECT FName FROM CUSTOMER WHERE Cust_Id='$Cust_id'
+	Admin: SELECT FName FROM STAFF WHERE Staff_Id='$Staff_id'
+3. Guest Page Functions:
+	Order Food: REPLACE INTO ORDERED_BY VALUES ('$Cust_Id','$Food_Id','$Quantity'
+	Schedule Amenity: REPLACE INTO AVAILS VALUES ('$Cust_Id','$Amenity_Id','$Time'
+	Stored Procedures for Bills:
+		Room Bill: CALL RoomBills('$Cust_id',@RoomCost)
+		Food Bill: CALL FoodBills('$Cust_id',@FoodCost)
+		Amenity Bill: CALL AmenityBills('$Cust_id',@AmenityCost)
+		To Set Cost Totals for each category: SELECT COST FROM TotalBillViewBase WHERE CUSTOMER_ID = '$Cust_id'
+		Total Bill: CALL TotalBill('$Cust_id',@TotalCost)
+
+4. Admin Page Functions:
+	Booking a Room: INSERT INTO CUSTOMER VALUES ('$Cust_Id','$FName','$MName','$LName','$DOB','$Address','$Phone_No','$Staff_Id','$Room_No');
+			UPDATE ROOM SET Cust_Id = '$Cust_Id', Duration_Days = '$Duration_Days' WHERE Room_No = '$Room_No'
+
+	Checking Out: DELETE FROM CUSTOMER WHERE Cust_Id = '$Cust_Id';
+		      "UPDATE ROOM SET Duration_Days = NULL WHERE Room_No = '$Room_No';

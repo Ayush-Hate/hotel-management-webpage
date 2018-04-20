@@ -1,0 +1,41 @@
+//when same amenity/food is ordered, do not add another table entry. update the quantity of previous entry
+//5149bfad0013
+
+______________FOOD ORDER_________________
+
+
+DELIMITER $$
+CREATE TRIGGER FoodOrder BEFORE INSERT ON ORDERED_BY
+FOR EACH ROW BEGIN
+DECLARE rowCount INT;
+DECLARE newQty INT;
+
+	SET rowCount = (SELECT COUNT(*) FROM ORDERED_BY WHERE Cust_Id = NEW.Cust_Id AND Food_Id = NEW.Food_Id);
+	
+	SET newQty = (SELECT Quantity FROM ORDERED_BY WHERE Cust_Id = NEW.Cust_Id AND Food_Id = NEW.Food_Id);
+		
+	IF(rowCount>0) THEN
+		SET NEW.Quantity = newQty + NEW.Quantity;
+	END IF;
+END$$
+DELIMITER ;
+
+
+
+___________________AMENITY BOOK________________
+
+DELIMITER $$
+CREATE TRIGGER AmenityBook BEFORE INSERT ON AVAILS
+FOR EACH ROW BEGIN
+DECLARE rowCount INT;
+DECLARE newTime INT;
+
+	SET rowCount = (SELECT COUNT(*) FROM AVAILS WHERE Cust_Id = NEW.Cust_Id AND Amenity_Id = NEW.Amenity_Id);
+	
+	SET newTime = (SELECT Time FROM AVAILS WHERE Cust_Id = NEW.Cust_Id AND Amenity_Id = NEW.Amenity_Id);
+		
+	IF(rowCount>0) THEN
+		SET NEW.Time = newTime + NEW.Time;
+	END IF;
+END$$
+DELIMITER ;

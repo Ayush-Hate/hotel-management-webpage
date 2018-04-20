@@ -1,0 +1,120 @@
+//Create and select and obtain value from VIEWS
+
+
+
+//View for RoomBill
+
+CREATE VIEW RoomBillView AS
+(SELECT R.Cust_Id AS 'CUSTOMER_ID', R.Type AS 'TYPE', R.Cost_Per_Night AS 'COST', R.Duration_Days AS 'DAYS', (R.Cost_Per_Night*R.Duration_Days) AS 'TOTAL'
+FROM ROOM AS R
+WHERE R.Cust_Id IS NOT NULL
+);
+
+//View for FoodBill
+
+CREATE VIEW FoodBillView AS
+(SELECT O.Cust_Id AS 'CUSTOMER_ID', F.Food_Id AS 'FOOD_ID', F.Name AS 'NAME', F.Price AS 'COST', O.Quantity AS 'QUANTITY_ORDERED', (F.Price*O.Quantity) AS 'TOTAL'
+FROM FOOD AS F NATURAL JOIN ORDERED_BY AS O
+);
+
+//View for AmenityBill
+
+CREATE VIEW AmenityBillView AS
+(SELECT Av.Cust_Id AS 'CUSTOMER_ID', A.Amenity_Id AS 'AMENITY_ID', A.Name AS 'NAME', A.Rate_Per_Hour AS 'RATE', Av.Time AS 'DURATION', (A.Rate_Per_Hour*Av.Time) AS 'TOTAL'
+FROM AMENITY AS A NATURAL JOIN AVAILS AS Av
+);
+
+//View for TotalBill NOTE YOU CANNOT USE A SELECT STATEMENT INSIDE A VIEW SELECT BECAUSE MYSQL/MARIADB DOES NOT ALLOW THIS!!!!! WE CREATE 2 VIEWS
+
+CREATE VIEW TotalBillViewBase AS
+(SELECT R.CUSTOMER_ID, SUM(R.TOTAL) AS COST
+FROM RoomBillView AS R
+GROUP BY R.CUSTOMER_ID) 
+UNION
+(SELECT F.CUSTOMER_ID, SUM(F.TOTAL)
+FROM FoodBillView AS F 
+GROUP BY F.CUSTOMER_ID) 
+UNION
+(SELECT A.CUSTOMER_ID, SUM(A.TOTAL)
+FROM AmenityBillView AS A
+GROUP BY A.CUSTOMER_ID);
+
+
+CREATE VIEW TotalBillView AS 
+(SELECT T.CUSTOMER_ID AS 'CUSTOMER_ID', SUM(T.COST) AS 'TOTAL' 
+FROM TotalBillViewBase AS T 
+GROUP BY T.CUSTOMER_ID);
+
+//Procedure for Room Bill
+
+DELIMITER $$$
+
+CREATE PROCEDURE RoomBills (IN  Custid INT, OUT RoomCost DECIMAL(13,2))
+BEGIN 
+SELECT TYPE,COST,DAYS,TOTAL 
+FROM RoomBillView 
+WHERE CUSTOMER_ID = Custid;
+
+SELECT TOTAL INTO RoomCost
+FROM RoomBillView
+WHERE CUSTOMER_ID = Custid;
+
+END $$$
+DELIMITER ;
+
+
+//Procedure for Food Bill
+
+DELIMITER $$$
+
+CREATE PROCEDURE FoodBills (IN  Custid INT, OUT FoodCost DECIMAL(13,2))
+BEGIN 
+SELECT NAME,COST,QUANTITY_ORDERED,TOTAL 
+FROM FoodBillView 
+WHERE CUSTOMER_ID = Custid;
+
+SELECT SUM(TOTAL) INTO FoodCost
+FROM RoomBillView
+WHERE CUSTOMER_ID = Custid;
+
+END $$$
+DELIMITER ;
+
+
+//Procedure for Amenity Bill
+
+DELIMITER $$$
+
+CREATE PROCEDURE AmenityBills (IN  Custid INT, OUT AmenityCost DECIMAL(13,2))
+BEGIN 
+SELECT NAME,RATE,DURATION,TOTAL 
+FROM AmenityBillView 
+WHERE CUSTOMER_ID = Custid;
+
+SELECT SUM(TOTAL) INTO AmenityCost
+FROM AmenityBillView
+WHERE CUSTOMER_ID = Custid;
+
+END $$$
+DELIMITER ;
+
+
+//Procedure for Total Bill
+
+DELIMITER $$$
+
+CREATE PROCEDURE TotalBill (IN  Custid INT, OUT TotalCost DECIMAL(13,2))
+BEGIN 
+SELECT TOTAL
+FROM TotalBillView
+WHERE CUSTOMER_ID = Custid;
+
+END $$$
+DELIMITER ;
+
+
+
+
+
+
+

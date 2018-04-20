@@ -1,0 +1,6 @@
+INSERT INTO AMENITY VALUES (3001,"Room Service", 0.00),(3002,"Swimming Pool", 20.00),(3003,"Health Club", 50.00),(3004,"Spa",100.00),(3005,"Mini-Bar",200.00),(3006,"Laundry",100.00),(3007,"Casino",500.00),(3009,"Games Room",100.00),(3010,"Sports",100.00);
+
+INSERT INTO FOOD VALUES (4001,"Vegetarian Soup", "Asian",15.00),(4002,"Non-Vegetarian Soup","Asian",20.00),(4003,"Paneer Tikka", "Indian",30.00),(4004,"Chicken Nuggets", "American", 30.00),(4005,"Garlic Bread","Italian",25.00),(4006,"Fried Rice", "Chinese", 30.00),(4007,"Pizza Margharita","Italian",50.00),(4008,"Mutton Handi","Indian",35.00),(4009,"Red Curry/Green Curry Chicken","Thai",40.00),(4010,"Spinach with Chilli and Lemon Crumbs","Mediterranean",30.00),(4011,"Fondue","Swiss",20.00),(4012,"Assorted Naan/Roti","Indian",50.00),(4013,"Rasgulla","Indian",20.00),(4014,"Ice-Cream-Sundae","American",20.00),(4015,"Gelato","Italian",15.00),(4016,"Mineral Water","",5.00),(4017,"Soft-Drinks","",10.00);
+
+INSERT INTO STAFF VALUES(101001,"Ayush","Atul","Hate","9594356709",1500000.00),(101002,"Ishita","","Dongre","9972224900",1000000.00);
+
